@@ -135,8 +135,22 @@ public:
 			temp = temp->next;
 			tempObj = tempObj->next;
 		}
-
 	}
+		~linkedList() // Destructor
+		{
+			if (isEmpty()) delete head;
+			else
+			{
+				node * temp = NULL;
+				while (head != NULL)
+				{
+					temp = head;
+					head = head->next;
+					delete temp;
+				}
+			}
+		}
+	
 private:
 	node * head;
 };
