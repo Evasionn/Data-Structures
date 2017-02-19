@@ -53,6 +53,73 @@ public:
 			walk->next = createNode(data); // create new node if the next is empty
 		}
 	}
+
+	void insertToPosition(T data, int position) // The function that adds new node to a specific position
+	{
+		if (isEmpty()) head = createNode(data);
+		else
+		{
+			node * newNode = createNode(data);
+			if (position == 0)
+			{
+				newNode->next = head;
+				head = newNode;
+			}
+			else
+			{
+				node * temp = head;
+				node * prev = NULL;
+				int counter = 0;
+				for (int i = 0; i < position; i++)
+				{
+					if (temp == NULL)
+					{
+						prev->next = newNode;
+						break;
+					}
+					else
+					{
+						prev = temp;
+						temp = temp->next;
+					}
+				}
+				newNode->next = temp;
+				prev->next = newNode;
+			}
+		}
+	}
+
+	void insertSorted(T data) // The function that allows adding new node in sorted 
+	{
+		if (head == NULL) head = createNode(data);
+		else
+		{
+			node * temp = head;
+			node * prev = NULL;
+			node * newNode = createNode(data);
+			while (temp != NULL)
+			{
+				if (data < temp->data)
+				{
+					if (prev == NULL) // Adding node for smallest data
+					{
+						newNode->next = temp;
+						head = newNode;
+						return;
+					}
+					else
+					{
+						prev->next = newNode; // Adding node if the data's position is middile of the list
+						newNode->next = temp;
+						return;
+					}
+				}
+				prev = temp;
+				temp = temp->next;
+			}
+			prev->next = newNode; // adding node to end for biggest data
+		}
+	}
 	int numberOfElements() // The method that returns number of elements that list has
 	{
 		int counter = 0;
@@ -74,7 +141,35 @@ public:
 		}
 		cout << "NULL" << endl;
 	}
+
+
+	void reverseTraverse(node * head) // The function that prints out whole list members in reverse order.  Head is private member so I designed it in 2 part
+	{
+		if (head == NULL) return;
+		reverseTraverse(head->next);
+		cout << head->data << " -> ";
+	}
 	
+	void reverseTraverse()
+	{
+		reverseTraverse(head);
+		cout << "NULL" << endl;
+	}
+	
+	void reverse() // The function that reverse a linked list
+	{
+		node * prev = NULL;
+		node * curr = head;
+		node * next = NULL;
+		while (curr != NULL)
+		{
+			next = curr->next;
+			curr->next = prev;
+			prev = curr;
+			curr = next;
+		}
+		head = prev;
+	}
 	void deleteFirst()
 	{
 		if (isEmpty()) return; // if the list is empty, do nothing
@@ -136,7 +231,41 @@ public:
 			tempObj = tempObj->next;
 		}
 	}
-		~linkedList() // Destructor
+	
+	bool operator ==(const linkedList obj) // To compare two linked list. If they are equal to each other, returned value is true, otherwise it is false
+	{
+		node * temp = head;
+		node * tempObj = obj.head;
+		while (temp != NULL && tempObj != NULL)
+		{
+			if (temp->data != tempObj->data) return false;
+			temp = temp->next;
+			tempObj = tempObj->next;
+		}
+		if (temp != NULL) return false;
+		if (tempObj != NULL) return false;
+		return true;
+	}
+
+	bool operator !=(const linkedList obj) // Negative of equality function
+	{
+		return !operator == (obj);
+	}
+
+	void clearList() // The function that deletes all members of linked list
+	{
+		node * temp = head;
+		node * deleted = NULL;
+		while (temp != NULL)
+		{
+			deleted = temp;
+			temp = temp->next;
+			delete deleted;
+		}
+		head = NULL;
+	}
+
+			~linkedList() // Destructor
 		{
 			if (isEmpty()) delete head;
 			else
